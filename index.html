@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual de Atendimento</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            min-height: 100vh;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            overflow-y: auto;
+            position: fixed;
+            height: 100%;
+            transition: transform 0.3s ease; /* Suaviza transição em mobile */
+        }
+        .sidebar h2 {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+        .sidebar li {
+            margin: 10px 0;
+        }
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+        }
+        .sidebar a:hover, .sidebar a.active {
+            background-color: #34495e;
+        }
+        .content {
+            margin-left: 270px;
+            padding: 20px;
+            width: calc(100% - 270px);
+            display: none; /* Escondido até login */
+        }
+        .content h1 {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        .content pre {
+            white-space: pre-wrap;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            font-size: 1em;
+        }
+        #login-screen {
+            text-align: center;
+            padding: 50px;
+            width: 100%;
+            background-color: #f4f4f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        #login-screen input {
+            padding: 12px;
+            margin: 10px;
+            width: 250px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 1em;
+        }
+        #login-screen button {
+            padding: 12px 24px;
+            background-color: #2c3e50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.2s;
+        }
+        #login-screen button:hover {
+            background-color: #34495e;
+        }
+        #error-msg {
+            color: red;
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+        .section-image {
+            max-width: 100%;
+            height: auto;
+            margin-top: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: static;
+                transform: none;
+            }
+            .content {
+                margin-left: 0;
+                width: 100%;
+            }
+            #login-screen {
+                padding: 20px;
+            }
+            #login-screen input {
+                width: 80%;
+                max-width: 300px;
+            }
+            .section-image {
+                max-width: 90%;
+                margin-left: auto;
+                margin-right: auto;
+                display: block;
+            }
+        }
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #1a1a1a;
+                color: #e0e0e0;
+            }
+            .content pre {
+                background-color: #2c2c2c;
+            }
+            #login-screen {
+                background-color: #1a1a1a;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="login-screen">
+        <h2>Acesso ao Manual de Atendimento</h2>
+        <p>Digite a senha para continuar:</p>
+        <input type="password" id="password-input" placeholder="Senha">
+        <button onclick="checkPassword()">Entrar</button>
+        <p id="error-msg" style="display: none;">Senha incorreta!</p>
+    </div>
+    <div class="sidebar">
+        <h2>Manual de Atendimento</h2>
+        <ul id="menu"></ul>
+    </div>
+    <div class="content">
+        <h1 id="section-title">Selecione um tópico</h1>
+        <pre id="section-content">Clique em um tópico no menu à esquerda para visualizar o conteúdo.</pre>
+    </div>
+
+    <script>
+        const manualSections = {
+            1: {
+                title: "OBJETIVO",
+                content: `Estabelecer padrões claros de comunicação e atendimento para garantir a excelência no relacionamento com clientes e entregadores, aumentando a fidelização e evitando cancelamentos.`
+            },
+            2: {
+                title: "Canais de Atendimento",
+                content: `- Chat (iFood)\n- Ligação telefônica (Cliente)\n- WhatsApp oficial da loja (Cliente)\n- Suporte a entregadores (Mensagens do Whatsapp dos Entregadores)`
+            },
+            3: {
+                title: "PRINCÍPIOS GERAIS DE ATENDIMENTO",
+                content: `- Agilidade e objetividade\n- Empatia e cordialidade\n- Resolução no primeiro contato sempre que possível\n- Uso de linguagem clara, gentil e sem jargões`
+            },
+            4: {
+                title: "ATENDIMENTO VIA CHAT (iFood ou App)",
+                content: ` ➤ Boas Práticas\n\n- Inicie com uma saudação personalizada:\n\n“Olá, [bom dia, boa tarde, boa noite]! Tudo bem? Em que podemos te ajudar?”\n\n- Sempre leia ou escute a solicitação com atenção e confirme o que entendeu:\n\n“Entendi que você gostaria de alterar seu endereço, certo?”\n\n- Evite mensagens secas ou genéricas. Use tom humanizado e empático.\n\n ➤ Modelos de resposta\n\n**Reenvio de item faltante:**\n\n“Pedimos desculpas por isso! Podemos enviar o item agora mesmo com prioridade. Pode confirmar o endereço?”\n\n**Pedido atrasado:**\n\n- Saiu para entrega:\n\n“Seu pedido já está a caminho! Entendemos sua preocupação e vamos entrar em contato com o(a) entregador(a) para localizar seu pedido. Agradecemos a paciência!”\n\n- Ainda em preparo:\n\n“Estamos com uma alta demanda hoje e verificamos que seu pedido será um dos próximos a sair para entrega, solicitamos prioridade na rota. Pedimos desculpas por esse atraso, iremos analisar todo ocorrido para que experiências assim não voltem a se repetir.”`
+            },
+            5: {
+                title: "PROTOCOLOS IMPORTANTES - Tratamento de Solicitações de Clientes no iFood",
+                content: `Durante a operação de atendimento, o iFood pode enviar solicitações de clientes que exigem resposta rápida. Essas solicitações têm prazo limitado, com contagem regressiva para resposta. Caso **não** sejam respondidas dentro do tempo estipulado, o pedido será automaticamente cancelado.\n\n# Tipos de Solicitações Comuns:\n\n- Pedido incorreto ou incompleto\n- Atraso na entrega\n- Qualidade do pedido (ex: comida fria ou danificada)\n\n# Procedimento para Resposta:\n\n1. Monitore constantemente as notificações no gestor de pedidos para garantir que todas as solicitações sejam visualizadas imediatamente.\n2. Responda de forma clara e rápida, oferecendo soluções eficazes como reenvio de itens, descontos ou esclarecimento de dúvidas.\n3. Não deixe de responder dentro do prazo, evitando o cancelamento automático do pedido e a insatisfação do cliente.\n\n# Importância de Responder Rapidamente:\n\n- Evitar cancelamento do pedido e perda de vendas.\n- Preservar a satisfação do cliente, mesmo em casos de erro ou problema.\n- Evitar impacto na reputação do restaurante na plataforma.`
+            },
+            6: {
+                title: "PROTOCOLOS IMPORTANTES - Cliente quer cancelar o pedido",
+                content: `# 💰 Pagamento na entrega\n\nInformar ao cliente que não é necessário cancelar o pedido pelo iFood, pois nenhuma cobrança será realizada.\n\n📌 Exemplo de resposta:\n\n“Como o pagamento seria feito na entrega e o pedido não foi concluído, não é necessário cancelar pelo iFood. Fique tranquilo(a), você não será cobrado(a).”\n\n# 💳 Pagamento online\n\nAntes de cancelar, é obrigatório oferecer alternativas ao cliente, como:\n\n- ✅ Prioridade no preparo do pedido\n- ✅ Agendamento para outro dia/horário\n- ✅ Crédito do valor pago para uso futuro\n\n➤ **Somente se o cliente recusar TODAS essas opções**, o cancelamento deve ser feito pela loja.\n\n🛑 Motivo a ser usado no portal iFood: “Endereço incompleto e cliente não atende.”\n\n⚠️ Importante:\n\n- Não envie passo a passo de cancelamento para o cliente.\n- O cancelamento deve ser feito internamente pela loja para garantir controle e evitar impacto no desempenho da unidade.\n\n📌 Exemplo de resposta:\n\n“Podemos dar prioridade ao seu pedido agora, reagendar para quando for melhor para você ou deixar o valor como crédito para uso futuro. Qual dessas opções você prefere?”\nSe o cliente responder: “Prefiro cancelar.”\nEntão, proceda com o cancelamento pela loja e informe:\n“Sem problemas! Vamos cancelar aqui mesmo, assim você não precisa fazer nada no aplicativo.”\n\n***CAMINHO PLANILHA DE CRÉDITO:***\n\nE:\\Créditos 2025`
+            },
+            7: {
+                title: "ATENDIMENTO POR LIGAÇÃO",
+                content: ` ➤ Abertura\n\n“Olá, boa tarde! Aqui é do Grupo Menu. Como posso te ajudar?”\n\n ➤ Postura profissional\n\n- Fale com tom calmo e firme, mesmo em situações de conflito.\n- Use frases curtas e objetivas.\n- Nunca transfira a ligação sem aviso.\n\n ➤ Encerramento cordial\n\n“Agradecemos o seu contato, [Nome]! Se precisar de algo mais, estamos à disposição. Tenha um ótimo dia!”`
+            },
+            8: {
+                title: "ATENDIMENTO VIA WHATSAPP",
+                content: ` ➤ Boas práticas\n\n- Utilize linguagem informal, mas sempre respeitosa.\n- Envie mensagens curtas e claras.\n- Nunca demore mais de 5 minutos para responder (se possível).\n\n ➤ Modelo de saudação\n\n“Olá, tudo bem? Aqui é do Grupo Menu. Como posso te ajudar hoje?”\n\n ➤ Padronização de atendimento\n\nUtilize respostas rápidas para temas frequentes, como:\n\n- Atraso na entrega (Voltar ao protocolo de atendimento)\n- Cancelamento (Voltar ao protocolo de atendimento)\n- Pedido incompleto (Voltar ao protocolo de atendimento)\n- Horários de funcionamento\n\n*Aldeota: De 09:00 às 03:00*\n*Cambeba: De 10:00 às 23:00*\n*Parquelândia/Parangaba: De 10:00 às 23:00*`
+            },
+            9: {
+                title: "SUPORTE AOS ENTREGADORES – WHATSAPP (Mensagens Escritas)",
+                content: ` 📲 Atendimento exclusivo via WhatsApp\n\nTodo o suporte aos entregadores é feito apenas por mensagens escritas no WhatsApp. Ligações e atendimento presencial não são realizados.\n\n✅ Boas Práticas de Atendimento\n\n1. Comunicação Clara e Educada\n2. Utilize sempre uma linguagem clara, objetiva e respeitosa.\n3. Evite frases em tom imperativo. Prefira sugestões ou perguntas.\n4. Exemplo recomendado:\n5. ✅ “Você consegue tentar algum contato pelo interfone?”\n6. ❌ “Liga para o interfone.”\n7. Solicitação de Informações\n8. Solicite apenas o número do pedido, pois o nome já está registrado no sistema.\n9. Agilidade no Atendimento\n10. Mantenha o atendimento rápido e eficiente para não comprometer o tempo de entrega.\n11. A agilidade contribui para uma experiência positiva e evita atrasos operacionais.\n\n 📍 Procedimento – Cliente não atende\n\n1. O entregador envia mensagens no WhatsApp informando que o cliente não está atendendo.\n2. O suporte solicita apenas o número do pedido (caso não tenha sido informado).\n3. O suporte inicia o contato com o cliente e o entregador aguarda no local por até 15 minutos, contados a partir do primeiro aviso.\n4. Durante esse tempo:\n5. Se o cliente responder, o suporte informa ao entregador:\n\n“O cliente confirmou que está indo te encontrar. Por favor, aguarde mais um momento.”\n\n6. Se não houver resposta em até 15 minutos, o suporte responde:\n\n“Sem retorno do cliente. Pode retornar à loja com o pedido.”`
+            },
+            10: {
+                title: "PROTOCOLOS IMPORTANTES - Item Faltante",
+                content: `Ação para Atendimento ao Cliente:\n\n- Sempre oferecer reenvio do item faltante, independentemente do valor ou tipo de produto.\n\n📌 Mensagem sugerida para o cliente:\n\n“Sentimos muito por isso! Podemos enviar o item faltante com urgência para você, tudo bem?”\n\n __Informação Interna - Processo de Verificação e Reenvio:__\n\n1. Responsável pela Verificação:\n2. Caso o cliente informe a falta de algum item (exceto bebidas), o protocolo é verificar com a expedição.\n3. Expedição: Equipe responsável por garantir que todos os itens sejam entregues completos e corretos ao entregador.\n4. Exceção - Bebidas:\n5. Se a falta for de bebida, a primeira ação é contatar o entregador, pois é comum que ele possa ter esquecido de incluir o item.\n6. Protocolo Interno - Bebidas:\n7. Caso o entregador negue que estava com a bebida:\n8. Entre em contato com a expedição para confirmar se o item foi realmente separado.\n9. Se a expedição não tiver confirmação de que a bebida foi separada e enviada ao entregador (exemplo: sacola de bebida não ficou na área de separação), o entregador será responsável pela falha e perderá a taxa de entrega do pedido que foi realizado de forma incompleta.\n10. Verificação nas Câmeras:\n11. O supervisor da expedição deve verificar as câmeras de segurança após o movimento para identificar se a bebida foi entregue ao entregador.\n12. Caso a bebida tenha sido entregue ao entregador:\n13. O entregador perderá a taxa de entrega que ele recebeu pela entrega incompleta.\n14. Caso a bebida não tenha sido entregue ao entregador:\n15. O supervisor da expedição informa a falha, e uma taxa de reenvio expedição será lançada.\n16. Esta taxa de reenvio será roteirizada para o entregador, já que o item não foi entregue pela expedição, e ele havia perdido a taxa do pedido anteriormente.\n17. Reenvio ao Cliente:\n18. Atenção para a agilidade: O processo de verificação e reenvio deve ser rápido para evitar atrasos no atendimento ao cliente. Entre em contato com a expedição de forma imediata para verificar a situação e já solicite o reenvio do item faltante.\n19. Após a verificação e ajuste da situação (se necessário), lançar o reenvio do item para o cliente com a comunicação adequada.`
+            },
+            11: {
+                title: "PROTOCOLOS IMPORTANTES - Caso o cliente não queira reenvio",
+                content: `Oferecer crédito interno para ser usado em um próximo pedido.\n\n📌 Mensagem sugerida:\n\n“Entendo! Podemos deixar um crédito no valor do item aqui na loja para você usar quando quiser. Fica à sua escolha!”`
+            },
+            12: {
+                title: "PROTOCOLOS IMPORTANTES - Se o cliente insistir no reembolso",
+                content: `A loja não realiza reembolso diretamente, pois esse processo é feito exclusivamente pelo iFood.\n\n📌 Mensagem sugerida:\n\n“O reembolso precisa ser solicitado direto no app, pois a loja não tem acesso ao sistema de estorno. Abaixo segue o passo a passo para pedir o reembolso parcial com o iFood:”\n\n 📲 Passo a passo – Cancelamento parcial no app iFood\n\n1. Abra o app iFood e vá até o pedido\n2. Toque em ‘Ajuda’\n3. Selecione ‘Pedido veio incompleto’\n4. Clique em ‘Continuar’\n5. Marque o(s) item(ns) que faltaram\n6. Escreva o que ocorreu e, se possível, anexe uma foto\n7. Envie para o iFood analisar\n\n📌 Mensagem final sugerida:\n\n“Assim que o iFood analisar sua solicitação, eles mesmos fazem o estorno. Qualquer dúvida, estamos por aqui para ajudar!”`
+            },
+            13: {
+                title: "PROTOCOLOS IMPORTANTES - Reclamações graves ou sem solução imediata",
+                content: ` Exemplo:\n\n- Comidas estragadas.\n- Objeto cortante dentro do produto.\n- Organismo não alimentício.\n\nQuando o cliente apresenta uma reclamação mais grave ou o atendimento não pode ser finalizado de imediato, siga este protocolo: (Ressaltando que o pós venda somente é utilizado quando o cliente recusar as ofertas de crédito e reenvio no atendimento.)\n\n ✅ 1. Coletar os dados do cliente\n\n- Nome completo (caso não esteja salvo)\n- Número de telefone com DDD\n\n ✅ 2. Informar que o caso será encaminhado ao Pós-Venda\n\n📌 Mensagem padrão sugerida:\n\n“Sinto muito pela situação, [Nome]. Nesse caso, vamos acionar nosso time de Pós-Venda, que fará contato com você pelo WhatsApp em até 2 dias úteis para continuar o atendimento. Pode me confirmar seu número com DDD, por favor?”\n\nApós o cliente confirmar o número:\n\n“Certo, [Nome]! Acabamos de registrar o seu caso. Em breve você receberá uma mensagem do nosso time de Pós-Venda. Seguimos à disposição por aqui também 😊”\n\n ✅ 3. Tabular o caso na planilha de Pós-Venda\n\n📝 Após o atendimento, acesse o link abaixo e registre o caso na planilha oficial:\n\n🔗 [Planilha – CASOS PARA RESOLUÇÃO UNIDADES x PÓS-VENDA](https://docs.google.com/spreadsheets/d/16UZ8xb__p2Qx-wvS6UNI-dK_4s31DzvHZaiB96D7eLw/edit?usp=sharing)\n\nO que preencher:\n\n- Nome do cliente\n- Telefone (com DDD)\n- Número do pedido\n- Motivo da reclamação\n- Status atual (ex: aguardando contato, deseja reembolso, etc.)\n- Nome da loja, unidade e atendente responsável`
+            },
+            14: {
+                title: "DICAS DE OURO",
+                content: `✔ Sempre confirme com o cliente antes de tomar qualquer ação.\n✔ Evite transferir o problema para o iFood; a loja deve resolver o máximo possível.\n✔ Seja gentil mesmo com clientes difíceis.\n✔ Use nomes dos clientes sempre que possível.\n✔ Nunca diga “não posso ajudar” — use:\n\n“Vou verificar a melhor solução para você.”`
+            },
+            15: {
+                title: "ANEXOS SUGERIDOS",
+                content: `- Tabela com modelos prontos de mensagem\n- Checklist rápido de solução de problemas\n- Fluxograma de cancelamento e reenvio`
+            },
+            16: {
+                title: "Manual de Processos Internos – Operação da Loja - 1. Lançamento de Pedidos Internos",
+                content: `Quando usar:\n\n- Pedido feito fora do app (via WhatsApp e telefone)\n\n📝 Passo a passo:\n\n1. Solicitar ao cliente:\n   - Número de cadastro/telefone (se souber ou já for cliente)\n   - Nome e sobrenome\n   - Endereço completo (rua, número, complemento, bairro, referência)\n\n2. Inserir o número de telefone no sistema:\n   - Se o cliente já tiver cadastro, o sistema geralmente puxa os dados automaticamente\n   - Se não houver cadastro, preencher manualmente no momento da criação do pedido\n\n3. Conferir todos os dados antes de seguir:\n   - Finalizar cadastro do endereço deixando entrega grátis (código:13)\n   - Fazer lançamento do pedido com os códigos que já temos organizados.\n   - Verificar com o cliente se tem alguma observação ou deseja algo mais.\n\n4. Finalizar a venda perguntando a forma de pagamento ao cliente:\n   - Para escolher a forma de pagamento, clique em F1 e digite o código de acordo com a opção do cliente.\n\n📌 Observação importante: Sempre que possível, validar os dados mesmo que o cadastro exista. Clientes mudam de endereço com frequência ou podem ter deixado algo desatualizado.`
+                
+            },
+            17: {
+                title: "Manual de Processos Internos – Operação da Loja - 2. Lançamento de Segunda Taxa (Taxa Extra para Entregador)",
+                content: `Quando usar:\n\n- Quando o pedido retorna após o entregador comprovar tempo de espera e o cliente opta por receber novamente o pedido. Caso o entregador aguarde um tempo necessário no ponto de entrega e o pedido não possa ser concluído, ou se o pedido for devolvido e o cliente solicitar a reentrega, uma segunda taxa é necessária para cobrir os custos dessa nova tentativa.\n\n- Quando o endereço está errado e a distância entre os dois endereços for superior a 2.0 km. Se o endereço informado estiver incorreto ou se houver necessidade de correção durante a entrega, além de distâncias maiores que 2.0 km entre o ponto de entrega errado e o correto, uma segunda taxa pode ser lançada para cobrir os custos extras envolvidos.\n\n- Outros problemas NÃO relacionados a reenvios da cozinha ou expedição. Casos imprevistos que exigem custos adicionais para concluir a entrega (como falhas no sistema ou outros problemas logísticos).\n\nComo lançar:\n\n1. Cadastro de Endereço (Código 105):\n   - Código: 105 (Cadastro de Endereço de Segunda Taxa)\n   - Nome: Coloque "SegTx - Ped. (N° do pedido na BERP) - (Nome do Cliente)". Exemplo: SegTx - Ped. 123 - João Silva\n   - Preenchimento do Endereço: Complete com o endereço do cliente onde a entrega foi tentada (or onde ocorrerá a reentrega).\n   - Taxa de Entrega: Escolha a taxa de entrega referente ao bairro correspondente.\n\n2. Lançamento da Segunda Taxa (Código 993):\n   - Código: 993 (Segunda Taxa)\n   - Aparição Automática: O nome SEGUNDA TAXA aparecerá automaticamente após o cadastro de endereço.\n   - Observação: Antes de lançar, adicione o motivo da cobrança da segunda taxa na observação de forma clara e breve. Exemplos:\n   - Motivo: "Ped. (N° do pedido) - Endereço incorreto, entregar novamente nesse endereço"\n   - Motivo: " Ped. (N° do pedido) - Pedido retornou sem contato, enviar novamente."\n\n3. Finalização da Venda (Código 28 - Taxa Extra)\n   - Descrição: Utilize o código 28 para marcar a taxa como uma taxa do restaurante, não cobrada ao cliente, ou seja, é uma taxa interna para cobrir custos operacionais adicionais.\n\n Exemplo Completo:\n\n- Cadastro de Endereço (Código 105): \n- Nome: SegTx Ped. 12345 - João Silva\n- Endereço: Rua das Flores, 123, Bairro Jardim\n- Taxa de entrega: R$ 10,00 (taxa do bairro)\n- Lançamento de Segunda Taxa (Código 993): Observação: "Endereço incorreto, reentrega solicitada"\n- Finalização da Venda (Código 28): Taxa Extra (Restaurante)\n`,
+                image: "https://i.imgur.com/NycT4h1.png"
+            },
+            18: {
+                title: "Manual de Processos Internos – Operação da Loja - 3. Lançamento de Reenvio – Expedição",
+                content: `Quando usar:\n\n- Problemas operacionais causados por erro de expedição.\n\nExemplos de situações:\n\n- Prato embalado errado.\n- Falta de kit descartável.\n- Falta de bebida.\n- Bebida entregue errada.\n\n Como lançar:\n\nPassos para Lançamento:\n\n1. Código de Cadastro de Endereço:\n   - O código de cadastro de endereço deve ser 104 (isso indica que é um reenvio).\n\n2. Nome do Cliente:\n   - No campo de nome do cliente, será automaticamente preenchido "REENVIO - N° do Pedido - Nome da Cliente".\n   - Exemplo: "REENVIO - N° 12345 - Maria Silva"\n\n3. Preenchimento do Endereço:\n   - Você deve preencher o endereço completo do cliente com as informações de entrega. Caso o endereço seja o mesmo do pedido original, apenas confirme os detalhes.\n\n4. Taxa de Entrega:\n   - A taxa de entrega deverá ser preenchida conforme o bairro do cliente.\n   - Verifique o bairro e, se for necessário, ajuste a taxa com base na tabela de tarifas de entrega para aquela região.\n\n5. Código de Lançamento para Reenvio Expedição:\n   - Utilize o código 992 para lançar o reenvio de expedição.\n   - Isso vai gerar o nome "REENVIO EXPEDIÇÃO" automaticamente, facilitando o processo.\n\n6. Observação:\n   - No campo de observação, você deve descrever o que aconteceu para que o pedido tenha sido reenviado.\n   - Exemplo de observação:\n    "(N° do pedido) – Bebida errada entregue, realizar troca."\n    "(N° do pedido) – Falta de kit descartável"\n\n7. Finalização da Venda (Código 28 - Taxa Extra):\n   - Código: 28 (Taxa Extra)\n   - Descrição: Utilize o código 28 para marcar a taxa como uma taxa do restaurante, não cobrada ao cliente, ou seja, é uma taxa interna para cobrir custos operacionais adicionais.\n\n Resumo do Processo:\n\n1. Endereço: Cadastro código 104.\n2. Nome: "REENVIO - N° do Pedido - Nome da Cliente".\n3. Taxa de Entrega: Definir conforme o bairro.\n4. Código de Lançamento: 992 – o nome será preenchido automaticamente como "REENVIO EXPEDIÇÃO".\n5. Observação: Descrição do erro de expedição.\n6. Finalização da Venda (Código 28): Código 28: Taxa Extra (Restaurante)\n\n Exemplo de Lançamento:\n\n- Código de Cadastro de Endereço: 104\n- Nome: REENVIO - N° 123 - Maria Silva\n- Endereço: Rua Tomas Rodrigues, 783, Bairro Antônio Bezerra, Fortaleza\n- Taxa de Entrega: R$ 10,00 (conforme o bairro)\n- Código de Lançamento: 992 (automático: "REENVIO EXPEDIÇÃO")\n- Observação: "Ped. (N° do pedido) Faltou bebida, reenviar novamente."\n- Finalização da Venda (Código 28): Código 28: Taxa Extra (Restaurante)`
+            },
+            19: {
+                title: "Manual de Processos Internos – Operação da Loja - 4. Lançamento de Reenvio – Qualidade",
+                content: `Quando usar:\n\n- Problemas operacionais na cozinha, relacionados à qualidade dos itens enviados.\n\nExemplos de situações:\n\n- Comida com qualidade abaixo do esperado (ex: mal cozida, ingredientes estragados).\n- Montagem incorreta dos ingredientes (ex: prato com itens faltando ou trocados).\n- Qualquer outro erro que envolva a preparação dos alimentos.\n\nComo lançar:\n\nPassos para Lançamento:\n\n1. Código de Cadastro de Endereço:\n   - O código de cadastro de endereço será 104, assim como no caso do reenvio de expedição.\n\n2. Nome do Cliente:\n   - No campo de nome do cliente, será preenchido automaticamente como "REENVIO - N° do Pedido - Nome da Cliente".\n   - Exemplo: "REENVIO - N° 123 - Maria Silva"\n\n3. Preenchimento do Endereço:\n   - Preencher o endereço completo do cliente. Caso o endereço seja o mesmo do pedido original, basta confirmar os dados.\n\n4. Taxa de Entrega:\n   - A taxa de entrega será a mesma do reenvio de expedição, dependendo do bairro do cliente. Verifique e preencha conforme a tabela de tarifas.\n\n5. Código de Lançamento para Reenvio Qualidade:\n   - O código de lançamento para reenvio de qualidade será 994.\n   - Isso vai gerar automaticamente o nome "REENVIO QUALIDADE" no sistema.\n\n6. Observação:\n   - No campo de observação, descreva o erro relacionado à qualidade da comida ou preparo.\n   - Exemplo de observação:\n      "(N° do pedido) – Prato mal preparado, ingredientes errados"\n      "(N° do pedido) – Ingredientes frescos faltando no pedido"\n\n7. Finalização da Venda (Código 28 - Taxa Extra):\n   - Descrição: Utilize o código 28 para marcar a taxa como uma taxa do restaurante, não cobrada ao cliente, ou seja, é uma taxa interna para cobrir custos operacionais adicionais.\n\n Resumo do Processo para Reenvio - Qualidade:\n\n1. Endereço: Código 104.\n2. Nome: "REENVIO - N° do Pedido - Nome da Cliente".\n3. Taxa de Entrega: Ajuste conforme o bairro.\n4. Código de Lançamento: 994 – o nome será preenchido automaticamente como "REENVIO QUALIDADE".\n5. Observação: Descrição do erro relacionado à qualidade da comida.\n6. Finalização da Venda (Código 28): Código 28: Taxa Extra (Restaurante)\n\n Exemplo de Lançamento para Reenvio - Qualidade:\n\n- Código de Cadastro de Endereço: 104\n- Nome: REENVIO - N° 12345 - Maria Silva\n- Endereço: Rua Tomas Rodrigues, 783, Bairro Antônio Bezerra, Fortaleza\n- Taxa de Entrega: R$ 10,00 (conforme o bairro)\n- Código de Lançamento: 994 (automático: "REENVIO QUALIDADE")\n- Observação: "Erro de qualidade – Ingredientes errados no prato"\n- Finalização da Venda (Código 28): Taxa Extra (Restaurante)\n\n Dicas e Considerações:\n\n- Reenvio de Expedição geralmente envolve a logística e a organização de envio, enquanto o Reenvio de Qualidade foca na parte de produção e preparação dos alimentos. Por isso, a diferenciação entre eles ajuda a segmentar as responsabilidades de cada área (expedição e cozinha).\n\n- Caso o problema seja repetitivo em um determinado tipo de pedido ou área (como falta de ingredientes ou embalagens), isso pode indicar a necessidade de revisar processos internos.\n\n- Para Qualidade, se o erro for recorrente, pode ser interessante fazer uma análise mais profunda na cozinha, para garantir que a qualidade dos pratos se mantenha consistente.`
+            },
+            20: {
+                title: "Manual de Processos Internos – Operação da Loja - Responsabilidades por setor",
+                content: `| Setor             |                                                                                                            |\n| ----------------- | ---------------------------------------------------------------------------------------------------------- |\n| Atendimento       | Frente da comunicação ao cliente, lançamentos de problemas operacionais, comunicação com o entregador |\n| Expedição         | Conferência do pedido, checagem de embalagem, separação correta                                       |\n| Cozinha/Qualidade | Avaliação de erros de produção, agilidade e excelência no preparo                                     |`
+            },
+            21: {
+                title: "Manual de Processos Internos – Operação da Loja - 6. Cobrança de Pedidos com Falha no Pagamento",
+                content: `Objetivo: Descrever o processo para realizar a cobrança de pedidos nos casos em que o pagamento não foi completado corretamente durante a entrega.\n\n Situações que Justificam a Cobrança:\n\nA cobrança deve ser realizada na seguinte situação:\n\n1. Falha na maquineta durante o pagamento.\nObs importante: a falha na maquineta é quando ela representa problema como sem sinal ou descarregada. Se aparecer a seguinte mensagem, “NÃO HABILITADO” significa que o cartão não é aceito, provavelmente é o alimentação.\n\n Requisitos para Realizar a Cobrança:\n\n1. Contato do Cliente:\n   - A cobrança só pode ser efetuada se o atendente ou entregador conseguir o número de contato do cliente.\n   - O pedido pode ser entregue, essa informação será passada ao entregador, após a confirmação que recebeu o contato do cliente. (É importante observar quantos pedidos a cliente tem, e se a forma de pagamento está como vale refeição)\n   - O número de contato é essencial, pois os IDs do iFood expiram rapidamente, tornando o contato direto com o cliente necessário.\n\n2. Dados do Pedido Original:\n   - Preencha os campos da cobrança com as mesmas informações do pedido original, incluindo o número do pedido. Não há taxa de entrega a ser cobrada do cliente.\n\nComo Lançar:\n\n1. Cadastro de Endereço (Código 106):\n   - Código: 106 (Cadastro de Endereço de Cobrança)\n   - Nome: Coloque "Cobrança - Ped. (Número do pedido na BERP) - (Nome do Cliente)".\n   - Exemplo: Cobrança - Ped. 123 - João Silva\n   - Preenchimento do Endereço: Complete com o endereço do cliente onde a entrega foi tentada ou onde ocorrerá a reentrega.\n   - Taxa de Entrega: Escolha a taxa de entrega referente ao bairro correspondente.\n\n2. Lançamento da Cobrança (Código 991):\n   - Código: 991 (Cobrança)\n   - Aparição Automática: O nome COBRANÇA aparecerá automaticamente após o cadastro de endereço.\n   - Observação: Antes de lançar, adicione o motivo da cobrança de forma clara e breve.\n   - Exemplo:\n      Motivo: "Ped. 123 – Problema na maquineta, enviar uma cobrança"\n\n3. Finalização da Venda (Código 28 - Taxa Extra):\n   - Descrição: Utilize o código 28 para marcar a taxa como uma taxa interna do restaurante, ou seja, não cobrada ao cliente. Isso cobre os custos operacionais adicionais da nova tentativa de entrega.\n\n# Exemplo Completo:\n\n- Cadastro de Endereço (Código 106):\n- Nome: Cobrança - Ped. 123 - João Silva\n- Endereço: Rua das Flores, 123, Bairro Jardim\n- Taxa de Entrega: R$ 10,00 (taxa do bairro)\n- Lançamento da Cobrança (Código 991):\n- Observação: "Maquineta com problemas, realizar cobrança"\n- Finalização da Venda (Código 28):\n- Código 28: Taxa Extra (Restaurante)\n\n Considerações Finais:\n\n- Cobrança: Essa cobrança é aplicada para cobrir custos operacionais da nova tentativa de entrega, mas não deve be cobrada do cliente.\n- Problema foi com o entregador: Se o entregador não levar a maquineta ou troco, ele deve retornar ao local para resolver a cobrança.\n- Observação: Sempre adicione uma descrição clara e concisa sobre o motivo da cobrança, para facilitar o processo e evitar confusões.`
+            },
+            22: {
+                title: "Manual de Processos Internos – Operação da Loja - 7. Erros de Integração de Pedido (Pedido Não Integra do iFood para o Sistema)",
+                content: `# Quando Usar:\n\nEsse procedimento deve ser seguido quando um pedido não for integrado corretamente do iFood para o nosso sistema, devido a falha na transmissão de dados ou problemas no sistema de integração.\n\n# Como Lançar o Pedido:\n\n1. Cadastro de Endereço (Código 107):\n   - Código: 107 (Erro de Integração de Pedido)\n   - Nome: Coloque o nome "(Nome do Cliente) - (Nome da Loja que Realizou o Pedido) - (ID do Pedido do iFood)".\n   - Exemplo: João Silva - Loja Ginger - iFood 1234\n   - Preenchimento do Endereço: Complete com o endereço do cliente onde o pedido foi tentado ou será entregue.\n   - Observação: No campo de observação do endereço, insira o localizador do pedido no iFood para que o entregador possa confirmar o pedido usando o código.\n   - Exemplo: Observação: "Localizador do iFood: 87654321"\n\n2. Lançamento de Itens do Pedido:\n   - Lançamento Item por Item: Após cadastrar o endereço, lançar cada item do pedido conforme aparece no iFood, com as mesmas quantidades, descrições e valores.\n   - Exemplo: Se o pedido no iFood é composto por 1 pizza grande e 2 refrigerantes, insira cada item conforme os detalhes originais do pedido.\n\n3. Verificação de Valor:\n   - Após lançar todos os itens do pedido, verifique o valor total do pedido no sistema e compare com o valor do pedido original do iFood.\n   - Se o valor no sistema for maior do que o valor do iFood, aplique o desconto necessário para ajustar os valores.\n\n4. Forma de Pagamento:\n   - Se o pagamento for online (como no caso de cartões de crédito ou débito), utilize o código 23 para marcar o pagamento como pagamento online.\n   - Código de Lançamento para Pagamento: Código 23 - Pagamento Online\n   - Se a forma de pagamento for dinheiro, utilize o código correspondente para esse método.\n\n# Exemplo Completo:\n\n1. Cadastro de Endereço (Código 107):\n   - Nome: João Silva - Loja XYZ - iFood 123456\n   - Endereço: Rua das Flores, 123, Bairro Jardim\n   - Observação: "Localizador do iFood: 987654321"\n\n2. Lançamento dos Itens:\n   - Item 1: Pizza Grande - R$ 30,00\n   - Item 2: Refrigerante 1,5L - R$ 8,00\n   - Total Inicial: R$ 38,00\n\n3. Verificação de Valor:\n   - Se o valor no sistema for R$ 40,00, aplique um desconto de R$ 2,00 para igualar o valor ao do iFood.\n\n4. Forma de Pagamento (Código 23 - Pagamento Online):\n   - Código 23: Pagamento Online (já registrado no iFood)\n\n5. Finalização da Venda:\n   - O valor final da venda no sistema deve ser igual ao do iFood após a aplicação de qualquer desconto.\n   - Valor Final: R$ 38,00 (após desconto)\n\n Considerações Finais:\n\n- Lançamento Correto dos Itens: Todos os itens devem ser lançados conforme os dados do iFood para garantir que o valor final esteja correto.\n- Desconto: Caso o valor no sistema seja maior que o do iFood, aplique o desconto necessário para ajustar os valores.\n- Forma de Pagamento: Utilize o código 23 para pagamento online, ou o código correspondente para outros métodos de pagamento.\n- Localizador do iFood: Sempre inclua o localizador do iFood na observação para facilitar a confirmação do pedido.`
+            },
+            23: {
+                title: "Manual de Processos Internos – Operação da Loja - 8. Reabertura de Venda no BERP para Adicionar Itens Extras",
+                content: `# Quando Usar:\n\nEste procedimento deve ser seguido quando a venda já foi realizada, o pedido foi integrado ao sistema BERP, mas o cliente deseja adicionar itens extras após a venda ter sido finalizada.\n\n# Como Reabrir a Venda e Lançar Itens Extras:\n\n1. Reabertura da Venda no BERP:\n   - Localize a venda original no BERP utilizando o ID do pedido do iFood ou o nome do cliente.\n   - Reabra a venda original utilizando seu acesso no BERP para editar e adicionar os itens extras solicitados pelo cliente.\n\n2. Lançamento de Itens Extras:\n   - Após reabrir a venda, adicione os itens extras solicitados pelo cliente.\n   - Itens a serem lançados: Preencha a descrição e quantidade dos itens extras conforme o pedido do cliente.\n   - Exemplo: Se o cliente adicionou uma sobremesa ao pedido original, insira a sobremesa e avise ao cliente o preço correspondente.\n\n3. Verificação de Desconto:\n   - Desconto da Plataforma (iFood): Antes de finalizar a venda novamente, verifique se algum desconto foi aplicado ao pedido original no iFood (descontos promocionais ou de fidelidade).\n   - Aplicação do Desconto: O desconto é aplicado somente ao valor total do pedido original, não aos itens extras. O objetivo é manter o valor final da venda igual ao que foi registrado no iFood.\n   - Exemplo: Se o pedido original teve um desconto de R$ 5,00, aplique esse valor ao total do pedido original (não sobre os itens extras).\n\n4. Forma de Pagamento do Item Extra:\n   - Pagamento na Entrega: O cliente poderá pagar os itens extras somente na entrega.\n   - Pergunte ao cliente qual a forma de pagamento que ele deseja usar para o item extra (dinheiro, cartão de débito ou crédito).\n   - Exemplo: Se o cliente for pagar em dinheiro, selecione a opção correspondente no sistema.\n\n5. Finalização da Venda:\n   - Primeira Finalização (Pagamento Original):\n   - A venda original foi paga via iFood e já foi registrada no sistema.\n   - Código de pagamento: Use o código 23 para pagamento online, para indicar que o pagamento foi feito via plataforma iFood.\n   - Segunda Finalização (Item Extra):\n   - Lançamento do Item Extra: Após lançar o item extra, finalize a venda com o pagamento na entrega.\n   - Código de Pagamento: Se o item extra será pago em dinheiro, use o código 1 para pagamento em dinheiro.\n   - Se for pago com cartão, utilize o código de pagamento correspondente (por exemplo, código 50 para pagamento em cartão de crédito).\n   - Total Final: Verifique se o total do pedido original (já pago) e o total do item extra (a ser pago na entrega) estão corretamente registrados.\n\n# Exemplo Completo:\n\n1. Reabertura da Venda no BERP:\n   - ID do Pedido iFood: 1234\n   - Pedido Original:\n      Item 1: Pizza Grande - R$ 30,00\n      Item 2: Refrigerante 2L - R$ 8,00\n      Total Original: R$ 38,00\n      Desconto iFood: R$ 5,00 (Promoção)\n      Total com Desconto: R$ 33,00 (Este é o valor que o cliente pagou via iFood)\n\n2. Adicionar Itens Extras:\n   - Item Extra 1: Sobremesa - R$ 12,00\n   - Total Novo: R$ 45,00 (R$ 33,00 + R$ 12,00)\n   - Desconto: Não aplicável aos itens extras, somente ao pedido original.\n\n3. Finalização da Venda (Primeira Finalização - Pedido Original):\n   - Código 23: Pagamento Online (já pago via iFood)\n   - Valor Pago no iFood: R$ 33,00 (já pago via plataforma)\n\n4. Finalização da Venda (Segunda Finalização - Item Extra):\n   - Código 1: Pagamento em Dinheiro sem troco (pagamento na entrega)\n   - Valor do Item Extra a Pagar: R$ 12,00 (pago na entrega)\n\n Considerações Finais:\n\n- Reabertura da Venda no BERP: Sempre reabra a venda original para garantir que os itens extras sejam registrados corretamente no sistema.\n- Desconto da Plataforma (iFood): O desconto da plataforma (iFood) só deve ser aplicado ao valor do pedido original, não aos itens extras.\n- Forma de Pagamento do Item Extra: Confirme com o cliente qual forma de pagamento ele escolherá para o item extra (dinheiro, cartão, etc.) e finalize a venda corretamente.\n- Finalização Dupla: Lembre-se que haverá duas finalizações:\n- O pagamento original já feito no iFood (via código 23).\n- O pagamento do item extra, feito na entrega (via código 1 ou outro código correspondente à forma de pagamento).`
+            },
+            24: {
+                title: "Observação Final",
+                content: `Lembre-se, somos um time muito unido e sempre prontos para ajudar uns aos outros. Caso tenha qualquer dúvida sobre os processos ou se não tiver certeza de como proceder, não hesite em procurar um superior. Estamos todos aqui para garantir que as tarefas sejam realizadas da melhor maneira possível e que nenhum problema passe despercebido.\n\nContamos uns com os outros para resolver qualquer situação e, juntos, vamos sempre encontrar a melhor solução. Se precisar de apoio, sua equipe está à disposição!\n\nDocumento atualizado: 08/08/2025`
+            }
+        };
+
+        function checkPassword() {
+            const input = document.getElementById('password-input');
+            const error = document.getElementById('error-msg');
+            const loginScreen = document.getElementById('login-screen');
+            const content = document.querySelector('.content');
+            const sidebar = document.querySelector('.sidebar');
+
+            if (input.value === 'MenuDvy2023') {
+                loginScreen.style.display = 'none';
+                content.style.display = 'block';
+                sidebar.style.display = 'block';
+                populateMenu();
+            } else {
+                error.style.display = 'block';
+                input.value = '';
+            }
+        }
+
+        // Permitir login com tecla Enter
+        document.getElementById('password-input').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                checkPassword();
+            }
+        });
+
+        // Foco automático no campo de senha ao carregar
+        window.onload = function() {
+            document.getElementById('password-input').focus();
+        };
+
+        function populateMenu() {
+            const menu = document.getElementById('menu');
+            for (const key in manualSections) {
+                const li = document.createElement('li');
+                const a = document.createElement('a');
+                a.href = '#';
+                a.textContent = manualSections[key].title;
+                a.onclick = () => displaySection(key);
+                li.appendChild(a);
+                menu.appendChild(li);
+            }
+        }
+
+        function displaySection(key) {
+            const title = document.getElementById('section-title');
+            const content = document.getElementById('section-content');
+            title.textContent = manualSections[key].title;
+            content.textContent = manualSections[key].content;
+
+            // Verificar e exibir imagem, se existir
+            const existingImage = content.querySelector('img');
+            if (existingImage) {
+                existingImage.remove(); // Remove imagem anterior, se houver
+            }
+            if (manualSections[key].image) {
+                const img = document.createElement('img');
+                img.src = manualSections[key].image;
+                img.alt = `Imagem para ${manualSections[key].title}`;
+                img.className = 'section-image';
+                content.appendChild(img);
+            }
+
+            document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>
